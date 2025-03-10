@@ -11,12 +11,51 @@ const int LED_PIN_G = 6;
 volatile int flag_r = 0;
 volatile int flag_g = 0;
 
+repeating_timer_t red;
+repeating_timer_t green;
+
+volatile bool contando_red = false;
+volatile bool contando_green = false;
+
+
+bool timer_r_callback(repeating_timer_t *red) {
+    flag_r = 1;
+    return true;
+}
+
+bool timer_g_callback(repeating_timer_t *green) {
+    flag_g = 1;
+    return true;
+}
+
 void btn_callback(uint gpio, uint32_t events) {
+    
     if (events == 0x4) {
-        if (gpio == BTN_PIN_R)
-            flag_r = 1;
-        else if (gpio == BTN_PIN_G)
-            flag_g = 1;
+        
+        if (gpio == BTN_PIN_R) {
+
+            contando_red = !contando_red;
+        
+            if (contando_red) {
+                add_repeating_timer_ms(500, timer_r_callback, NULL, &red);
+            } else {
+                cancel_repeating_timer(&red);
+                gpio_put(LED_PIN_R, 0);
+            }
+
+        }
+
+        else if (gpio == BTN_PIN_G) {
+
+            contando_green = !contando_green;
+        
+            if (contando_green) {
+                add_repeating_timer_ms(250, timer_g_callback, NULL, &green);
+            } else {
+                cancel_repeating_timer(&green);
+                gpio_put(LED_PIN_G, 0);
+            }
+        }
     }
 }
 
@@ -42,10 +81,12 @@ int main() {
     while (true) {
 
         if (flag_r) {
+            gpio_put(LED_PIN_R, !gpio_get(LED_PIN_R));
             flag_r = 0;
         }
 
         if (flag_g) {
+            gpio_put(LED_PIN_G, !gpio_get(LED_PIN_G));
             flag_g = 0;
         }
     }
