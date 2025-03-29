@@ -8,8 +8,6 @@ const int LED_PIN_R = 4;
 volatile bool flag_f_r = false;
 volatile bool flag_btn_fall = false;
 
-volatile bool contando = false;
-
 repeating_timer_t timer_0;
 
 // Seta Flag -> Indicar Que Sinal Ocorreu
@@ -22,11 +20,13 @@ bool timer_0_callback(repeating_timer_t *rt) {
 void btn_callback(uint gpio, uint32_t events) {
     if (events & GPIO_IRQ_EDGE_FALL) {
         flag_btn_fall = true;
-        printf("Teste");
     }
 }
 
 int main() {
+
+    bool contando = false;
+
     stdio_init_all();
 
     // Setup LED
@@ -55,7 +55,7 @@ int main() {
                 add_repeating_timer_ms(500, timer_0_callback, NULL, &timer_0);
             } else {
                 cancel_repeating_timer(&timer_0);
-                gpio_put(LED_PIN_R, 0); // desliga o LED
+                gpio_put(LED_PIN_R, 0); 
             }
         }
 
