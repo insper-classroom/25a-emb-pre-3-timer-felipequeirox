@@ -49,14 +49,14 @@ int main() {
 
             flag_btn_fall = false; 
 
-            contando = !contando;
-
             if (contando) {
-                add_repeating_timer_ms(500, timer_0_callback, NULL, &timer_0);
-            } else {
                 cancel_repeating_timer(&timer_0);
                 gpio_put(LED_PIN_R, 0); 
+            } else {
+                add_repeating_timer_ms(500, timer_0_callback, NULL, &timer_0);                
             }
+
+            contando = !contando;
         }
 
         if (flag_f_r) {
