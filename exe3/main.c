@@ -42,8 +42,10 @@ int main() {
 
     while (true) {
 
+        alarm_id_t alarm;
+
         if (flag_f_r == 1) {
-            alarm_id_t alarm = add_alarm_in_ms(500, alarm_callback, NULL, true);
+            alarm = add_alarm_in_ms(500, alarm_callback, NULL, true);
         }
 
         if (flag_f_r == 2) {
